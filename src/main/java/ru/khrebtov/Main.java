@@ -1,30 +1,25 @@
 package ru.khrebtov;
 
-import ru.khrebtov.hw1.Person;
-import ru.khrebtov.hw1.polymorf.Circle;
-import ru.khrebtov.hw1.polymorf.Rectangle;
-import ru.khrebtov.hw1.polymorf.Shape;
+import ru.khrebtov.hw2.MyArrayList;
+import ru.khrebtov.hw2.MyLinkedList;
 
 public class Main {
     public static void main(String[] args) {
-        Person person = new Person.PersonBuilder("Jon", "Makkonahi")
-                .age(52)
-                .address("Boston")
-                .phone("911")
-                .build();
+        MyLinkedList<Integer> myLinkedList = new MyLinkedList<>();
 
-        System.out.println(person.toString());
+        myLinkedList.insertFirst(12);
+        myLinkedList.insertFirst(54);
+        myLinkedList.insertLast(32);
+        myLinkedList.insert(1, 88);
 
-        Shape[] shapes = new Shape[4];
+        System.out.println(myLinkedList.toString());
 
-        shapes[0] = new Circle(1);
-        shapes[1] = new Rectangle(1, 1);
-        shapes[2] = new Circle(2);
-        shapes[3] = new Rectangle(2, 2);
+        MyArrayList<Integer> myArrayList = new MyArrayList<>();
+        myArrayList.add(2);
+        myArrayList.add(4);
+        myArrayList.add(6);
+        myArrayList.add(0,12);
 
-        for (Shape shape : shapes) {
-            shape.printArea();
-        }
-
+        System.out.println(myArrayList);
     }
 }
