@@ -1,79 +1,53 @@
 package ru.khrebtov.hw5;
 
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
+import javax.persistence.EntityManager;
 import java.util.List;
-
-import static ru.khrebtov.hw5.Utils.getSessionFactory;
 
 public class StudentDao {
 
-    private Session currentSession;
+    private final EntityManager em;
 
-    private Transaction currentTransaction;
 
-    public StudentDao() {
+    public StudentDao(EntityManager em) {
+        this.em = em;
     }
 
-    public Session openCurrentSession() {
-        currentSession = getSessionFactory().openSession();
-        return currentSession;
-    }
-
-    public Session openCurrentSessionwithTransaction() {
-        currentSession = getSessionFactory().openSession();
-        currentTransaction = currentSession.beginTransaction();
-        return currentSession;
-    }
-
-    public void closeCurrentSession() {
-        currentSession.close();
-    }
-
-    public void closeCurrentSessionwithTransaction() {
-        currentTransaction.commit();
-        currentSession.close();
-    }
-
-    public Session getCurrentSession() {
-        return currentSession;
-    }
-
-    public void setCurrentSession(Session currentSession) {
-        this.currentSession = currentSession;
-    }
-
-    public Transaction getCurrentTransaction() {
-        return currentTransaction;
-    }
-
-    public void setCurrentTransaction(Transaction currentTransaction) {
-        this.currentTransaction = currentTransaction;
-    }
-
-    public void persist(Student student) {
-        getCurrentSession().persist(student);
-    }
-
-    public void save(Student student) {
-        getCurrentSession().save(student);
-    }
-
-    public void update(Student student) {
-        getCurrentSession().update(student);
-    }
-
-    public Student findById(String id) {
-        return (Student) getCurrentSession().get(Student.class, id);
-    }
-
-    public void delete(Student student) {
-        getCurrentSession().delete(student);
+    public Student findById(Long id) {
+        return em.find(Student.class, id);
     }
 
     public List<Student> findAll() {
-        return (List<Student>) getCurrentSession().createQuery("from Student ").list();
+        return em.createQuery("from Student ", Student.class).getResultList();
+    }
+
+    public void deleteById(Long id) {
+        em.createQuery("delete from Student where id = :id")
+                .setParameter("id", id)
+                .executeUpdate();
+    }
+
+    public void deleteAll() {
+        em.getTransaction().begin();
+        em.createQuery("delete from Student ").executeUpdate();
+        em.getTransaction().commit();
+    }
+
+    public void save(Student student) {
+        em.getTransaction().begin();
+        if (student.getId() == null) {
+            insert(student);
+        } else {
+            update(student);
+        }
+        em.getTransaction().commit();
+    }
+
+    private void insert(Student student) {
+        em.persist(student);
+    }
+
+    private void update(Student student) {
+        em.merge(student);
     }
 }
 
