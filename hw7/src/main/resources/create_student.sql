@@ -1,0 +1,10 @@
+drop table if exists student;
+CREATE TABLE IF NOT EXISTS student
+(
+    id   bigserial   NOT NULL,
+    name varchar(50) not null,
+    age  integer     not null,
+    CONSTRAINT student_pkey PRIMARY KEY (id)
+);
+
+
